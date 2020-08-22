@@ -7,6 +7,7 @@ use App\Http\Requests\UserRequest;
 use App\Http\Resources\User as UserResource;
 use App\Model\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserController extends Controller
@@ -14,11 +15,22 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return AnonymousResourceCollection
      */
-    public function index()
+    public function index(Request $request)
     {
-        return UserResource::collection(User::paginate(10));
+        $query = $request->query();
+        $users = User::query();
+
+        if ($query_name = empty($query['name']) ? '' : $query['name']) {
+            $users = $users->where('name', 'like', "%$query_name%");
+        }
+        if ($query_email = empty($query['email']) ? '' : $query['email']) {
+            $users = $users->where('email', 'like', "%$query_email%");
+        }
+
+        return UserResource::collection($users->paginate(10));
     }
 
     /**
