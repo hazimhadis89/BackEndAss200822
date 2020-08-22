@@ -15,5 +15,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function() {
+    Route::post('users/import', 'UserController@import')->name('users.import');
     Route::apiResource('users', 'UserController');
 });

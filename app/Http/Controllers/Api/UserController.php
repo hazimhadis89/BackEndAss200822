@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserImportRequest;
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\User as UserResource;
+use App\Imports\UsersImport;
 use App\Model\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -138,5 +141,16 @@ class UserController extends Controller
         return response()->json([
             'message'=>'Delete User Fail.',
         ], 422);
+    }
+
+    public function import(UserImportRequest $request)
+    {
+        $validated = $request->validated();
+
+        Excel::import(new UsersImport, $validated['file']);
+
+        return response()->json([
+            'message' => 'Import \''.$validated['file']->getClientOriginalName().'\' Success.',
+        ], 200);
     }
 }
