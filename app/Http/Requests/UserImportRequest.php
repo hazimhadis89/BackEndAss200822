@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Model\User;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserRequest extends FormRequest
+class UserImportRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +23,8 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
-        $id = $this->route('user');
-        return User::rules($this->method(), $id);
+        return [
+            'file' => 'required|file|mimes:xls,xlsx,csv'
+        ];
     }
 }

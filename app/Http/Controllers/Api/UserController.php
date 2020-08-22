@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserImportRequest;
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\User as UserResource;
+use App\Imports\UsersImport;
 use App\Model\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -46,12 +49,12 @@ class UserController extends Controller
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => bcrypt('P@ssw0rd'),
+            'password' => bcrypt(env('DEFAULT_PASSWORD')),
         ]);
 
         if ($user) {
             return response()->json([
-                'message' => 'Create User Success.'.' default password is \'P@ssw0rd\'',
+                'message' => 'Create User Success.'.' default password is \''.env('DEFAULT_PASSWORD').'\'',
                 'data' => new UserResource($user)
             ], 201);
         }
@@ -138,5 +141,16 @@ class UserController extends Controller
         return response()->json([
             'message'=>'Delete User Fail.',
         ], 422);
+    }
+
+    public function import(UserImportRequest $request)
+    {
+        $validated = $request->validated();
+
+        Excel::import(new UsersImport, $validated['file']);
+
+        return response()->json([
+            'message' => 'Import \''.$validated['file']->getClientOriginalName().'\' Success.',
+        ], 200);
     }
 }
