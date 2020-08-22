@@ -143,6 +143,12 @@ class UserController extends Controller
         ], 422);
     }
 
+    /**
+     * import excel/csv files and create/update/delete User according to action
+     *
+     * @param UserImportRequest $request
+     * @return JsonResponse
+     */
     public function import(UserImportRequest $request)
     {
         $validated = $request->validated();
