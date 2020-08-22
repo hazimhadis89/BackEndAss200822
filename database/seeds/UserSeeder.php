@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
             'name' => 'superadmin',
             'email' => 'hazim.hadis@gmail.com',
             'email_verified_at' => now(),
-            'password' => bcrypt('P@ssw0rd'),
+            'password' => bcrypt(env('DEFAULT_PASSWORD')),
             'remember_token' => Str::random(10),
         ]);
 

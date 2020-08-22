@@ -46,12 +46,12 @@ class UserController extends Controller
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => bcrypt('P@ssw0rd'),
+            'password' => bcrypt(env('DEFAULT_PASSWORD')),
         ]);
 
         if ($user) {
             return response()->json([
-                'message' => 'Create User Success.'.' default password is \'P@ssw0rd\'',
+                'message' => 'Create User Success.'.' default password is \''.env('DEFAULT_PASSWORD').'\'',
                 'data' => new UserResource($user)
             ], 201);
         }
